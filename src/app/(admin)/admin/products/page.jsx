@@ -20,7 +20,6 @@ export default function AdminProducts() {
 
         const data = await res.json();
 
-        // ✅ Ensure products is always an array
         if (Array.isArray(data)) {
           setProducts(data);
         } else if (data?.product) {
@@ -41,20 +40,20 @@ export default function AdminProducts() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-[#0a0411] text-white">
+      <div className="flex justify-center items-center h-screen bg-[#0a0411] text-white pt-6 mt-10">
         <p>Loading products...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0411] text-white px-6 py-10 mt-12">
+    <div className="min-h-screen bg-[#0a0411] text-white px-4 sm:px-6 py-10 mt-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-        <h1 className="text-3xl font-bold tracking-wide">🛍️ Products</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-wide">🛍️ Products</h1>
         <Link
           href="/admin/products/add"
-          className="bg-gradient-to-r from-purple-600 to-pink-600 px-5 py-2 rounded-lg text-white font-semibold hover:opacity-90 transition-all"
+          className="bg-gradient-to-r from-purple-600 to-pink-600 px-4 sm:px-5 py-2 rounded-lg text-white font-semibold hover:opacity-90 transition-all text-sm sm:text-base"
         >
           + Add Product
         </Link>
@@ -67,13 +66,13 @@ export default function AdminProducts() {
         </div>
       ) : (
         <div className="overflow-x-auto bg-[#1a0b2a] border border-[#2e1743] rounded-2xl shadow-lg">
-          <table className="w-full text-sm">
-            <thead className="bg-[#2e1743] text-gray-200 uppercase text-xs">
+          <table className="min-w-full text-sm sm:text-base">
+            <thead className="bg-[#2e1743] text-gray-200 uppercase text-xs sm:text-sm">
               <tr>
-                <th className="p-3 text-left">Name</th>
-                <th className="p-3 text-left">Price</th>
-                <th className="p-3 text-left">Category</th>
-                <th className="p-3 text-left">Actions</th>
+                <th className="p-2 sm:p-3 text-left">Name</th>
+                <th className="p-2 sm:p-3 text-left">Price</th>
+                <th className="p-2 sm:p-3 text-left">Category</th>
+                <th className="p-2 sm:p-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -82,15 +81,17 @@ export default function AdminProducts() {
                   key={p._id}
                   className="border-t border-[#392151] hover:bg-[#3b1b64] transition"
                 >
-                  <td className="p-3 font-medium">{p.title}</td>
-                  <td className="p-3 text-gray-300">{p.price}৳</td>
-                  <td className="p-3 text-gray-300">
+                  <td className="p-2 sm:p-3 font-medium break-words max-w-[120px] sm:max-w-none">
+                    {p.title}
+                  </td>
+                  <td className="p-2 sm:p-3 text-gray-300">{p.price}৳</td>
+                  <td className="p-2 sm:p-3 text-gray-300 break-words max-w-[100px] sm:max-w-none">
                     {p.category || "Uncategorized"}
                   </td>
-                  <td className="p-3 flex flex-wrap gap-3">
+                  <td className="p-2 sm:p-3 flex flex-wrap gap-2">
                     <Link
                       href={`/admin/products/edit/${p._id}`}
-                      className="text-blue-400 hover:text-blue-300 transition"
+                      className="text-blue-400 hover:text-blue-300 transition text-sm sm:text-base"
                     >
                       Edit
                     </Link>
@@ -114,7 +115,7 @@ export default function AdminProducts() {
                           console.error("Delete product error:", err);
                         }
                       }}
-                      className="text-red-500 hover:text-red-400 transition"
+                      className="text-red-500 hover:text-red-400 transition text-sm sm:text-base"
                     >
                       Delete
                     </button>

@@ -51,11 +51,12 @@ export default function FeedbackPopup() {
   return (
     <>
       <button
-        onClick={() => setOpen(true)}
-        className="text-[#FF00FF] hover:text-[#1E90FF] transition drop-shadow-[0_0_6px_#FF00FF]"
-      >
-        <MessageSquare className="w-6 h-6" />
-      </button>
+  id="feedback-btn"
+  onClick={() => setOpen(true)}
+  className="text-[#FF00FF] hover:text-[#1E90FF] transition drop-shadow-[0_0_6px_#FF00FF]"
+>
+  <MessageSquare />
+</button>
 
       {open &&
         createPortal(

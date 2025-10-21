@@ -34,7 +34,7 @@ export default function AdminCategoriesPage() {
   // Add or update category
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name.trim()) return setMessage("❌ Category name is required");
+    if (!form.name.trim()) return setMessage(" Category name is required");
 
     setLoading(true);
     setMessage("");

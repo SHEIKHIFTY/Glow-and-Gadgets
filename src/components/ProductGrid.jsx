@@ -54,7 +54,7 @@ export default function ProductGrid() {
       </motion.h2>
 
       <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4 sm:gap-6 justify-items-start px-2 sm:px-0 py-3"
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 justify-items-start px-2 sm:px-0 py-3"
         variants={containerVariants}
         initial="hidden"
         animate="show"

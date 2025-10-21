@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { User } from "lucide-react";
 import { createPortal } from "react-dom";
 
-export default function AccountPopup() {
+export default function AccountPopup({ externalOpen, setExternalOpen }) {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [nameInput, setNameInput] = useState("");
@@ -15,6 +15,11 @@ export default function AccountPopup() {
     if (savedUser) setUser(JSON.parse(savedUser));
   }, []);
 
+  // sync external state
+  useEffect(() => {
+    if (externalOpen !== undefined) setOpen(externalOpen);
+  }, [externalOpen]);
+
   const handleSignIn = (e) => {
     e.preventDefault();
     if (!nameInput.trim() || !numberInput.trim()) return;
@@ -22,6 +27,7 @@ export default function AccountPopup() {
     localStorage.setItem("user", JSON.stringify(userData));
     setUser(userData);
     setOpen(false);
+    if (setExternalOpen) setExternalOpen(false);
     setNameInput("");
     setNumberInput("");
   };
@@ -32,43 +38,48 @@ export default function AccountPopup() {
     setShowSignOut(false);
   };
 
+  // Decide whether to show the desktop icon: only if externalOpen is undefined
+  const showIcon = externalOpen === undefined;
+
   return (
     <>
-      {/* Account / Avatar Icon */}
-      <div className="relative">
-        <button
-          onClick={() => {
-            if (user) {
+      {/* Desktop/User icon (navbar) */}
+      {showIcon && (
+        <div className="relative">
+          <button
+             id="account-btn"  // ✅ this makes it targetable from Navbar
+             onClick={() => {
+          if (user) {
               setShowSignOut(!showSignOut);
-            } else {
-              setOpen(true);
+              } else {
+               setOpen(true);
+             if (setExternalOpen) setExternalOpen(true);
             }
           }}
-         className="relative text-[#FF00FF] hover:text-[#1E90FF] transition drop-shadow-[0_0_6px_#FF00FF] w-6 h-6 flex items-center justify-center rounded-full  hover:rounded-full"
+             className="relative text-[#FF00FF] hover:text-[#1E90FF] transition drop-shadow-[0_0_6px_#FF00FF] w-6 h-6 flex items-center justify-center rounded-full"
+           >
 
-        >
-          {user ? (
-            <span className="font-bold text-white">
-              {user.name?.charAt(0)?.toUpperCase()}
-            </span>
-          ) : (
-            <User className="w-6 h-6" />
+            {user ? (
+              <span className="font-bold text-white">{user.name?.charAt(0)?.toUpperCase()}</span>
+            ) : (
+              <User className="w-6 h-6" />
+            )}
+          </button>
+
+          {/* Sign Out Dropdown */}
+          {showSignOut && (
+            <div className="absolute right-0 mt-2 bg-[#070429] border border-[#7B2FF7]/50 text-white rounded-xl shadow-lg py-2 w-32 text-center animate-fadeIn">
+              <p className="text-sm text-gray-300 mb-1">{user.name}</p>
+              <button
+                onClick={handleSignOut}
+                className="text-sm text-[#FF00FF] hover:text-[#1E90FF] font-medium transition"
+              >
+                Sign Out
+              </button>
+            </div>
           )}
-        </button>
-
-        {/* Sign Out Dropdown */}
-        {showSignOut && (
-          <div className="absolute right-0 mt-2 bg-[#070429] border border-[#7B2FF7]/50 text-white rounded-xl shadow-lg py-2 w-32 text-center animate-fadeIn">
-            <p className="text-sm text-gray-300 mb-1">{user.name}</p>
-            <button
-              onClick={handleSignOut}
-              className="text-sm text-[#FF00FF] hover:text-[#1E90FF] font-medium transition"
-            >
-              Sign Out
-            </button>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Login Form Modal */}
       {open &&
@@ -105,7 +116,10 @@ export default function AccountPopup() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setOpen(false);
+                    if (setExternalOpen) setExternalOpen(false);
+                  }}
                   className="w-full mt-2 text-sm text-gray-400 hover:text-gray-200"
                 >
                   Cancel

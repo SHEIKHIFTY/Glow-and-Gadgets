@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AddProductPage() {
@@ -14,10 +14,24 @@ export default function AddProductPage() {
     featured: false,
     images: "",
   });
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Handle input changes
+  // Fetch categories from API
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch("/api/categories");
+        const data = await res.json();
+        if (res.ok) setCategories(data);
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      }
+    }
+    fetchCategories();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
@@ -26,7 +40,6 @@ export default function AddProductPage() {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -131,13 +144,20 @@ export default function AddProductPage() {
           {/* Category */}
           <div>
             <label className="block text-gray-300 mb-2">Category</label>
-            <input
-              type="text"
+            <select
               name="category"
               value={form.category}
               onChange={handleChange}
               className="w-full p-3 bg-[#2e1743] border border-[#3d1c5e] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
+              required
+            >
+              <option value="">Select a category</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Stock */}
