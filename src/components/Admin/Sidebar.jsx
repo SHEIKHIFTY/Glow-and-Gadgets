@@ -16,7 +16,7 @@ export default function Sidebar() {
 
   const handleLinkClick = (path) => {
     router.push(path);
-    setOpen(false); // close mobile menu
+    setOpen(false);
   };
 
   const menuItems = [
