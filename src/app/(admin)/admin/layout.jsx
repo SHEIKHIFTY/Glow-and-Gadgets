@@ -1,5 +1,5 @@
 "use client";
-import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminSideBar from "@/components/admin/AdminSidebar";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";

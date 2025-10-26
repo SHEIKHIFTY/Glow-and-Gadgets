@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Menu, X, Home, Box, ShoppingCart, Layers, LogOut } from "lucide-react";
 
-export default function AdminSidebar() {
+export default function AdminSideBar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -76,7 +76,9 @@ export default function AdminSidebar() {
       <aside className="hidden sm:flex w-64 bg-gradient-to-b from-[#0a0411] to-[#1b0532] text-white border-r border-[#221035] min-h-screen p-6 flex-col">
         <h1 className="text-3xl font-bold mb-10 text-[#FF00FF] drop-shadow-lg">Admin Panel</h1>
         <nav className="flex-1 flex flex-col gap-4">
-          {menuItems.map((item) => (
+          {menuItems.map((item) => {
+            Icon = item.icon;
+            return(
             <Link
               key={item.name}
               href={item.href}
@@ -84,10 +86,10 @@ export default function AdminSidebar() {
                 router.pathname === item.href ? "bg-[#7B2FF7]/30 text-[#FF00FF]" : ""
               }`}
             >
-              <item.icon className="w-5 h-5" />
+              <Icon className="w-5 h-5" />
               {item.name}
             </Link>
-          ))}
+          )})}
         </nav>
         <button
           onClick={handleLogout}
