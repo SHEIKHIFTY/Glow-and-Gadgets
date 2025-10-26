@@ -1,5 +1,5 @@
 "use client";
-import AdminSideBar from "@/components/admin/AdminSideBar";
+import Sidebar from "@/components/admin/Sidebar";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -29,7 +29,8 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="flex min-h-screen bg-[#0d0b18] text-white">
-      {showSidebar && <AdminSidebar />}
+      {showSidebar && <Sidebar />
+}
       <main className="flex-1 p-6">{children}</main>
     </div>
   );
