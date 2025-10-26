@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",        // base folder for @ alias
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]           // @/ points to /src/*
+      "@/*": ["src/*"]
     }
-  },
-  "exclude": ["node_modules", ".next"]
+  }
 }
