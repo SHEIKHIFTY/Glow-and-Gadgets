@@ -49,7 +49,9 @@ export default function AdminSideBar() {
             </button>
           </div>
           <nav className="flex flex-col gap-5">
-            {menuItems.map((item) => (
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return(
               <button
                 key={item.name}
                 onClick={() => handleLinkClick(item.href)}
@@ -58,7 +60,7 @@ export default function AdminSideBar() {
                 <item.icon className="w-5 h-5" />
                 {item.name}
               </button>
-            ))}
+            )})}
             <button
               onClick={handleLogout}
               className="mt-6 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-white font-medium transition"
@@ -77,7 +79,7 @@ export default function AdminSideBar() {
         <h1 className="text-3xl font-bold mb-10 text-[#FF00FF] drop-shadow-lg">Admin Panel</h1>
         <nav className="flex-1 flex flex-col gap-4">
           {menuItems.map((item) => {
-            Icon = item.icon;
+           const Icon = item.icon;
             return(
             <Link
               key={item.name}
