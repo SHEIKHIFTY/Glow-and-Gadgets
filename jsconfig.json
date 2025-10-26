@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "baseUrl": "./",
+    "baseUrl": "src",        // base folder for @ alias
     "paths": {
-      "@/": ["./src/"]
+      "@/*": ["*"]           // @/ points to /src/*
     }
-  }
+  },
+  "exclude": ["node_modules", ".next"]
 }
