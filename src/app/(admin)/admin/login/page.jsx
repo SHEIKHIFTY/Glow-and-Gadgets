@@ -8,7 +8,7 @@ export default function AdminLogin() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
-  // Redirect if already logged in
+ 
   useEffect(() => {
     const adminUser = localStorage.getItem("admin_user");
     if (adminUser) {
