@@ -1,6 +1,6 @@
 "use client";
 
-import Sidebar from "@/components/admin/Sidebar"; // ✅ Ensure file is Sidebar.jsx
+import Sidebar from "@/components/admin/Sidebar"; 
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
