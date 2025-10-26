@@ -1,32 +1,34 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import slugify from "slugify";
 
 export default function AddProductPage() {
   const router = useRouter();
   const [form, setForm] = useState({
     title: "",
-    slug: "",
     description: "",
     price: "",
     category: "",
     stock: "",
     featured: false,
     images: "",
+    rating: "",
   });
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Fetch categories from API
+  // Fetch categories
   useEffect(() => {
     async function fetchCategories() {
       try {
         const res = await fetch("/api/categories");
+        if (!res.ok) throw new Error("Failed to fetch categories");
         const data = await res.json();
-        if (res.ok) setCategories(data);
+        setCategories(data);
       } catch (err) {
-        console.error("Failed to fetch categories:", err);
+        console.error(err);
       }
     }
     fetchCategories();
@@ -46,35 +48,50 @@ export default function AddProductPage() {
     setMessage("");
 
     try {
+      const slug = slugify(form.title, { lower: true, strict: true });
+
+      const body = {
+        ...form,
+        slug,
+        price: Number(form.price),
+        stock: Number(form.stock || 0),
+        rating: Number(form.rating || 0),
+        images: form.images
+          ? form.images.split(",").map((i) => i.trim())
+          : [],
+      };
+
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          price: Number(form.price),
-          stock: Number(form.stock),
-          images: form.images ? form.images.split(",").map((i) => i.trim()) : [],
-        }),
+        body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      // Safely parse JSON
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
+      }
+
       if (!res.ok) throw new Error(data.error || "Failed to add product");
 
       setMessage("✅ Product added successfully!");
       setForm({
         title: "",
-        slug: "",
         description: "",
         price: "",
         category: "",
         stock: "",
         featured: false,
         images: "",
+        rating: "",
       });
 
       setTimeout(() => router.push("/admin/products"), 1000);
     } catch (err) {
-      console.error("Add product error:", err);
+      console.error(err);
       setMessage("❌ " + err.message);
     } finally {
       setLoading(false);
@@ -98,20 +115,6 @@ export default function AddProductPage() {
               value={form.title}
               onChange={handleChange}
               className="w-full p-3 bg-[#2e1743] border border-[#3d1c5e] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
-          </div>
-
-          {/* Slug */}
-          <div>
-            <label className="block text-gray-300 mb-2">Slug *</label>
-            <input
-              type="text"
-              name="slug"
-              value={form.slug}
-              onChange={handleChange}
-              className="w-full p-3 bg-[#2e1743] border border-[#3d1c5e] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="example: coffee-latte"
               required
             />
           </div>
@@ -141,9 +144,24 @@ export default function AddProductPage() {
             />
           </div>
 
+          {/* Rating */}
+          <div>
+            <label className="block text-gray-300 mb-2">Rating (1–5)</label>
+            <input
+              type="number"
+              name="rating"
+              min="1"
+              max="5"
+              step="0.1"
+              value={form.rating}
+              onChange={handleChange}
+              className="w-full p-3 bg-[#2e1743] border border-[#3d1c5e] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
           {/* Category */}
           <div>
-            <label className="block text-gray-300 mb-2">Category</label>
+            <label className="block text-gray-300 mb-2">Category *</label>
             <select
               name="category"
               value={form.category}
@@ -186,7 +204,9 @@ export default function AddProductPage() {
 
           {/* Images */}
           <div>
-            <label className="block text-gray-300 mb-2">Images (comma separated)</label>
+            <label className="block text-gray-300 mb-2">
+              Images (comma separated)
+            </label>
             <input
               type="text"
               name="images"

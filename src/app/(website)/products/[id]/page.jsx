@@ -1,8 +1,7 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import Image from "next/image";
-import { useEffect, useState } from "react";
 import CategorySidebar from "@/components/CategorySidebar";
 import { useCart } from "@/context/cartcontext";
 
@@ -19,7 +18,6 @@ export default function ProductDetails() {
       try {
         const res = await fetch(`/api/products`);
         const data = await res.json();
-        // Find the product by MongoDB _id
         const found = data.find((p) => p._id === id);
         setProduct(found || null);
       } catch (err) {
@@ -29,17 +27,23 @@ export default function ProductDetails() {
         setLoading(false);
       }
     }
-
     loadProduct();
   }, [id]);
 
-  if (loading) return <p className="text-center py-10 text-white">Loading product...</p>;
-  if (!product) return <div className="text-center py-10 text-red-400 text-xl">Product not found</div>;
+  if (loading)
+    return <p className="text-center py-10 text-white">Loading product...</p>;
 
-  const productQuantity = cartItems.find((item) => item._id === product._id)?.quantity || 0;
+  if (!product)
+    return (
+      <div className="text-center py-10 text-red-400 text-xl">
+        Product not found
+      </div>
+    );
+
+  const productQuantity =
+    cartItems.find((item) => item._id === product._id)?.quantity || 0;
 
   const handleAddToCart = () => addToCart(product);
-
   const handleOrderNow = () => {
     if (cartItems.length === 0) addToCart(product);
     router.push("/checkout");
@@ -55,30 +59,33 @@ export default function ProductDetails() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
       >
-       <div className="relative w-64 h-64 sm:w-80 md:w-96 lg:w-[450px] sm:h-80 md:h-96 lg:h-[450px] rounded-2xl overflow-hidden shadow-lg border border-[#3a0ca3]">
-  {product.images && product.images[0] ? (
-    <img
-      src={product.images[0]} // works for both local (/images/...) or full URL
-      alt={product.title}
-      className="w-full h-full object-cover"
-    />
-  ) : (
-    <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-600">
-      No Image
-    </div>
-  )}
-</div>
+        {/* Product Image */}
+        <div className="relative w-64 h-64 sm:w-80 md:w-96 lg:w-[450px] sm:h-80 md:h-96 lg:h-[450px] rounded-2xl overflow-hidden shadow-lg border border-[#3a0ca3]">
+          {product.images && product.images[0] ? (
+            <img
+              src={product.images[0]}
+              alt={product.title}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-600">
+              No Image
+            </div>
+          )}
+        </div>
 
-
+        {/* Product Info */}
         <div className="mt-6 md:mt-0 md:ml-10 max-w-md space-y-4">
           <p className="text-sm uppercase tracking-wide text-[#9d4edd] font-semibold">
-            {product.category || "Uncategorized"}
+            {product.category?.name || "Uncategorized"}
           </p>
           <h1 className="text-3xl sm:text-4xl font-bold">{product.title}</h1>
 
           <div className="flex items-center space-x-3">
             <p className="text-yellow-400">⭐ {product.rating || 4} / 5</p>
-            <span className="text-sm text-gray-300">{product.stock || "In Stock"}</span>
+            <span className="text-sm text-gray-300">
+              {product.stock != null ? `Stock: ${product.stock}` : "In Stock"}
+            </span>
           </div>
 
           <div className="border-t border-[#5a189a]/40 my-2" />

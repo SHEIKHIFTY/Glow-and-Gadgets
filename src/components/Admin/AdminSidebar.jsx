@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Home, Box, ShoppingCart, Layers, LogOut } from "lucide-react";
 
 export default function AdminSidebar() {
   const router = useRouter();
@@ -16,16 +16,23 @@ export default function AdminSidebar() {
 
   const handleLinkClick = (path) => {
     router.push(path);
-    setOpen(false); // close menu after click
+    setOpen(false); // close mobile menu
   };
+
+  const menuItems = [
+    { name: "Dashboard", href: "/admin", icon: Home },
+    { name: "Products", href: "/admin/products", icon: Box },
+    { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+    { name: "Categories", href: "/admin/categories", icon: Layers },
+  ];
 
   return (
     <>
       {/* Hamburger Menu for Mobile */}
       <div className="sm:hidden fixed top-4 left-4 z-50">
-       <button
+        <button
   onClick={() => setOpen(true)}
-  className="fixed top-24 left-4 p-2 bg-[#0a0411] rounded shadow text-white z-50"
+  className="p-2 bg-gradient-to-br bg-[#6806aa]  rounded-full shadow-lg text-white fixed z-50 top-20 left-4"
 >
   <Menu className="w-6 h-6" />
 </button>
@@ -34,35 +41,61 @@ export default function AdminSidebar() {
 
       {/* Mobile Slide-down Menu */}
       {open && (
-        <div className="sm:hidden fixed top-0 left-0 w-full bg-[#0a0411] text-white z-50 shadow-lg p-4 pt-8 flex flex-col">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Admin Panel</h1>
+        <div className="sm:hidden fixed top-0 left-0 w-full h-full bg-[#0a0411] text-white z-50 p-6 flex flex-col animate-slide-down">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-2xl font-bold text-[#FF00FF]">Admin Panel</h1>
             <button onClick={() => setOpen(false)}>
               <X className="w-6 h-6" />
             </button>
           </div>
-          <nav className="flex flex-col gap-4">
-            <button onClick={() => handleLinkClick("/admin")} className="text-left">Dashboard</button>
-            <button onClick={() => handleLinkClick("/admin/products")} className="text-left">Products</button>
-            <button onClick={() => handleLinkClick("/admin/orders")} className="text-left">Orders</button>
-            <button onClick={() => handleLinkClick("/admin/categories")} className="text-left">Categories</button>
-            <button onClick={handleLogout} className="mt-4 bg-red-600 py-2 rounded w-full">Logout</button>
+          <nav className="flex flex-col gap-5">
+            {menuItems.map((item) => (
+              <button
+                key={item.name}
+                onClick={() => handleLinkClick(item.href)}
+                className="flex items-center gap-3 text-white hover:text-[#FF00FF] transition-colors text-lg font-medium"
+              >
+                <item.icon className="w-5 h-5" />
+                {item.name}
+              </button>
+            ))}
+            <button
+              onClick={handleLogout}
+              className="mt-6 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-white font-medium transition"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <LogOut className="w-5 h-5" />
+                Logout
+              </div>
+            </button>
           </nav>
         </div>
       )}
 
       {/* Desktop Sidebar */}
-      <aside className="hidden sm:flex w-60 bg-[#0a0411] border-r border-[#221035] min-h-screen p-4 pt-10 mt-12 flex-col">
-        <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
-        <nav className="flex flex-col gap-3">
-          <Link href="/admin">Dashboard</Link>
-          <Link href="/admin/products">Products</Link>
-          <Link href="/admin/orders">Orders</Link>
-          <Link href="/admin/categories">Categories</Link>
-          <button onClick={handleLogout} className="mt-4 bg-red-600 py-2 rounded">
-            Logout
-          </button>
+      <aside className="hidden sm:flex w-64 bg-gradient-to-b from-[#0a0411] to-[#1b0532] text-white border-r border-[#221035] min-h-screen p-6 flex-col">
+        <h1 className="text-3xl font-bold mb-10 text-[#FF00FF] drop-shadow-lg">Admin Panel</h1>
+        <nav className="flex-1 flex flex-col gap-4">
+          {menuItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`flex items-center gap-3 px-4 py-2 rounded-lg text-white hover:text-[#FF00FF] hover:bg-[#7B2FF7]/20 transition-all ${
+                router.pathname === item.href ? "bg-[#7B2FF7]/30 text-[#FF00FF]" : ""
+              }`}
+            >
+              <item.icon className="w-5 h-5" />
+              {item.name}
+            </Link>
+          ))}
         </nav>
+        <button
+          onClick={handleLogout}
+          className="mt-6 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-white font-medium flex items-center justify-center gap-2 transition"
+        >
+          <LogOut className="w-5 h-5" />
+          Logout
+        </button>
       </aside>
     </>
   );

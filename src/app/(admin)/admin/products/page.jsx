@@ -6,116 +6,87 @@ export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Load all products
   useEffect(() => {
     async function loadProducts() {
       try {
         const res = await fetch("/api/products");
-
-        if (!res.ok) {
-          console.error("Products API error:", res.status, await res.text());
-          setProducts([]);
-          setLoading(false);
-          return;
-        }
-
+        if (!res.ok) throw new Error("Failed to fetch products");
         const data = await res.json();
-
-        if (Array.isArray(data)) {
-          setProducts(data);
-        } else if (data?.product) {
-          setProducts([data.product]);
-        } else {
-          setProducts([]);
-        }
+        setProducts(data);
       } catch (err) {
-        console.error("Failed to load products:", err);
+        console.error(err);
         setProducts([]);
       } finally {
         setLoading(false);
       }
     }
-
     loadProducts();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-[#0a0411] text-white pt-6 mt-10">
-        <p>Loading products...</p>
-      </div>
-    );
-  }
+  // Delete product
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this product?")) return;
+    try {
+      const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to delete product");
+      setProducts(products.filter((p) => p._id !== id));
+      alert("✅ Product deleted successfully");
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  if (loading)
+    return <p className="text-white text-center mt-10 pt-8">Loading products...</p>;
 
   return (
-    <div className="min-h-screen bg-[#0a0411] text-white px-4 sm:px-6 py-10 mt-12">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-wide">🛍️ Products</h1>
+    <div className="min-h-screen bg-[#0a0411] text-white px-4 sm:px-6 py-10 mt-14 sm:py-10 sm:mt-12">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">🛍️ Products</h1>
         <Link
           href="/admin/products/add"
-          className="bg-gradient-to-r from-purple-600 to-pink-600 px-4 sm:px-5 py-2 rounded-lg text-white font-semibold hover:opacity-90 transition-all text-sm sm:text-base"
+          className="bg-purple-600 px-4 py-2 rounded-lg hover:opacity-90"
         >
           + Add Product
         </Link>
       </div>
 
-      {/* Product Table */}
       {products.length === 0 ? (
-        <div className="text-center text-gray-400 mt-10">
-          No products found. Try adding one!
-        </div>
+        <p className="text-gray-400">No products found.</p>
       ) : (
-        <div className="overflow-x-auto bg-[#1a0b2a] border border-[#2e1743] rounded-2xl shadow-lg">
-          <table className="min-w-full text-sm sm:text-base">
-            <thead className="bg-[#2e1743] text-gray-200 uppercase text-xs sm:text-sm">
+        // ✅ Added scroll wrapper for mobile
+        <div className="overflow-x-auto rounded-lg">
+          <table className="min-w-full bg-[#1a0b2a] rounded-lg overflow-hidden">
+            <thead className="bg-[#2e1743] text-gray-200">
               <tr>
-                <th className="p-2 sm:p-3 text-left">Name</th>
-                <th className="p-2 sm:p-3 text-left">Price</th>
-                <th className="p-2 sm:p-3 text-left">Category</th>
-                <th className="p-2 sm:p-3 text-left">Actions</th>
+                <th className="p-3 text-left whitespace-nowrap">Title</th>
+                <th className="p-3 text-left whitespace-nowrap">Price</th>
+                <th className="p-3 text-left whitespace-nowrap">Category</th>
+                <th className="p-3 text-left whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody>
               {products.map((p) => (
                 <tr
                   key={p._id}
-                  className="border-t border-[#392151] hover:bg-[#3b1b64] transition"
+                  className="border-t border-[#392151] hover:bg-[#3b1b64]"
                 >
-                  <td className="p-2 sm:p-3 font-medium break-words max-w-[120px] sm:max-w-none">
-                    {p.title}
-                  </td>
-                  <td className="p-2 sm:p-3 text-gray-300">{p.price}৳</td>
-                  <td className="p-2 sm:p-3 text-gray-300 break-words max-w-[100px] sm:max-w-none">
-                    {p.category || "Uncategorized"}
-                  </td>
-                  <td className="p-2 sm:p-3 flex flex-wrap gap-2">
+                  <td className="p-3">{p.title}</td>
+                  <td className="p-3">{p.price}৳</td>
+                  <td className="p-3">{p.category?.name || "Uncategorized"}</td>
+                  <td className="p-3 flex gap-2">
                     <Link
                       href={`/admin/products/edit/${p._id}`}
-                      className="text-blue-400 hover:text-blue-300 transition text-sm sm:text-base"
+                      className="text-blue-400 hover:text-blue-300"
                     >
                       Edit
                     </Link>
                     <button
-                      onClick={async () => {
-                        if (!confirm("Delete this product?")) return;
-                        try {
-                          const res = await fetch(`/api/products`, {
-                            method: "DELETE",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ id: p._id }),
-                          });
-
-                          if (!res.ok) {
-                            console.error("Failed to delete product", await res.text());
-                            return;
-                          }
-
-                          setProducts(products.filter((x) => x._id !== p._id));
-                        } catch (err) {
-                          console.error("Delete product error:", err);
-                        }
-                      }}
-                      className="text-red-500 hover:text-red-400 transition text-sm sm:text-base"
+                      onClick={() => handleDelete(p._id)}
+                      className="text-red-500 hover:text-red-400"
                     >
                       Delete
                     </button>
