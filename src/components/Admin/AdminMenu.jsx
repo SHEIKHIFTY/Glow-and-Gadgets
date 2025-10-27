@@ -27,22 +27,29 @@ export default function AdminMenu() {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <div className="sm:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={() => setOpen(true)}
-          className="p-2 bg-gradient-to-br from-[#6806aa] to-[#7B2FF7] rounded-full shadow-lg text-white transition-all hover:scale-105"
-        >
-          ☰
-        </button>
-      </div>
+     {/* Mobile Menu Button */}
+<div className="sm:hidden fixed top-20 left-5 z-50">
+  <button
+    onClick={() => setOpen(true)}
+    className="w-10 h-10 flex items-center justify-center rounded-full 
+               bg-gradient-to-r from-fuchsia-600 via-purple-700 to-indigo-700 
+               shadow-[0_0_14px_rgba(168,85,247,0.6)] hover:shadow-[0_0_25px_rgba(168,85,247,0.9)] 
+               text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-white/10"
+  >
+    <span className="text-2xl font-bold">☰</span>
+  </button>
+</div>
 
-      {/* Mobile Slide Menu */}
+
+      {/* Mobile Sidebar */}
       {open && (
-        <div className="sm:hidden fixed top-0 left-0 w-full h-full bg-[#0a0411] text-white z-50 p-6 flex flex-col">
+        <div className="sm:hidden fixed inset-0 bg-[#0d0b18] z-50 p-6 flex flex-col animate-fadeIn">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-bold text-[#FF00FF]">Admin Panel</h1>
-            <button onClick={() => setOpen(false)} className="text-2xl">
+            <h1 className="text-2xl font-bold text-purple-400">Admin Panel</h1>
+            <button
+              onClick={() => setOpen(false)}
+              className="text-white text-2xl hover:text-purple-400 transition"
+            >
               ✕
             </button>
           </div>
@@ -52,7 +59,7 @@ export default function AdminMenu() {
               <button
                 key={item.name}
                 onClick={() => handleLinkClick(item.href)}
-                className="text-lg font-medium hover:text-[#FF00FF] transition-colors"
+                className="text-lg font-medium text-white hover:text-purple-400 transition-colors"
               >
                 {item.name}
               </button>
@@ -70,16 +77,14 @@ export default function AdminMenu() {
 
       {/* Desktop Sidebar */}
       <aside className="hidden sm:flex w-64 bg-gradient-to-b from-[#0a0411] to-[#1b0532] text-white border-r border-[#221035] min-h-screen p-6 flex-col">
-        <h1 className="text-3xl font-bold mb-10 text-[#FF00FF] drop-shadow-lg">
-          Admin Panel
-        </h1>
+        <h1 className="text-3xl font-bold mb-10 text-purple-400">Admin Panel</h1>
 
         <nav className="flex-1 flex flex-col gap-4">
           {menuItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg text-white hover:text-[#FF00FF] hover:bg-[#7B2FF7]/20 transition-all"
+              className="px-4 py-2 rounded-lg text-white hover:text-purple-400 hover:bg-purple-600/20 transition-all"
             >
               {item.name}
             </Link>
@@ -88,7 +93,7 @@ export default function AdminMenu() {
 
         <button
           onClick={handleLogout}
-          className="mt-6 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-white font-medium flex items-center justify-center gap-2 transition"
+          className="mt-6 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-white font-medium transition"
         >
           Logout
         </button>
