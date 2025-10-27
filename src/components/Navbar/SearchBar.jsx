@@ -42,18 +42,16 @@ export default function SearchBar() {
     }
   };
 
-  // Handle search or Enter key
   const handleSearch = (e) => {
     e.preventDefault();
     if (!query.trim()) return;
 
-    // Find exact match
     const exactMatch = suggestions.find(
       (p) => p.title.toLowerCase() === query.toLowerCase()
     );
 
     if (exactMatch) {
-      router.push(`/products/${exactMatch._id}`); // ✅ Use _id
+      router.push(`/products/${exactMatch._id}`);
     } else {
       alert("Product not found");
     }
@@ -62,14 +60,12 @@ export default function SearchBar() {
     setQuery("");
   };
 
-  // Handle clicking a suggestion
   const handleSuggestionClick = (id) => {
-    router.push(`/products/${id}`); // ✅ Use _id
+    router.push(`/products/${id}`);
     setShowSuggestions(false);
     setQuery("");
   };
 
-  // Hide suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (inputRef.current && !inputRef.current.contains(event.target)) {
@@ -91,7 +87,8 @@ export default function SearchBar() {
             setShowSuggestions(true);
           }}
           placeholder="Search products..."
-          className="w-full text-black px-4 py-2 pr-10 bg-[#e5e4ec] border border-[#7B2FF7]/50 rounded-full shadow-inner placeholder-gray-400 focus:outline-none text-sm sm:text-base focus:ring-2 focus:ring-[#FF00FF]"
+          // ✅ font size set to 16px to prevent mobile zoom
+          className="w-full text-black px-4 py-2 pr-10 bg-[#e5e4ec] border border-[#7B2FF7]/50 rounded-full shadow-inner placeholder-gray-400 focus:outline-none text-base focus:ring-2 focus:ring-[#FF00FF]"
         />
         <button
           type="submit"
@@ -101,7 +98,6 @@ export default function SearchBar() {
         </button>
       </form>
 
-      {/* Suggestions Dropdown */}
       {showSuggestions && query.trim() && (
         <div className="absolute mt-2 w-full bg-[#0E063A]/95 backdrop-blur-md border border-[#7B2FF7]/50 rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto">
           {loading ? (
@@ -110,7 +106,7 @@ export default function SearchBar() {
             suggestions.map((product) => (
               <div
                 key={product._id}
-                onClick={() => handleSuggestionClick(product._id)} // ✅ Use _id
+                onClick={() => handleSuggestionClick(product._id)}
                 className="flex items-center gap-3 p-3 cursor-pointer hover:bg-[#1E90FF]/20 transition"
               >
                 <img
@@ -122,7 +118,7 @@ export default function SearchBar() {
                   <p className="text-sm text-white font-medium">
                     {highlightText(product.title, query)}
                   </p>
-                  <p className="text-xs text-gray-400">${product.price}</p>
+                  <p className="text-xs text-gray-400">{product.price}৳</p>
                 </div>
               </div>
             ))
