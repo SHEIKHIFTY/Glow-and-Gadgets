@@ -7,7 +7,7 @@ export async function GET(req, context) {
   try {
     await dbConnect();
 
-    // await params
+    
     const { params } = await context;
     const id = params.id;
 
