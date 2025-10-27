@@ -2,7 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import AdminHeader from "@/components/admin/AdminHeader";
+import AdminHeader from "@/components/Admin/AdminHeader";
 import ProductForm from "@/components/products/ProductForm";
 
 export default function ProductsPage() {

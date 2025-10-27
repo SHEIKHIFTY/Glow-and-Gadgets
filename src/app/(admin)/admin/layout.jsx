@@ -1,6 +1,6 @@
 "use client";
 
-import AdminMenu from "@/components/admin/AdminMenu";
+import AdminMenu from "@/components/Admin/AdminMenu";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
