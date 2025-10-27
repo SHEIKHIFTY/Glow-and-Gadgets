@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -57,15 +58,14 @@ export default function AdminProducts() {
       {products.length === 0 ? (
         <p className="text-gray-400">No products found.</p>
       ) : (
-        // ✅ Added scroll wrapper for mobile
-        <div className="overflow-x-auto rounded-lg">
-          <table className="min-w-full bg-[#1a0b2a] rounded-lg overflow-hidden">
+        <div className="w-full overflow-hidden rounded-lg">
+          <table className="w-full table-auto bg-[#1a0b2a] rounded-lg text-sm sm:text-base">
             <thead className="bg-[#2e1743] text-gray-200">
               <tr>
-                <th className="p-3 text-left whitespace-nowrap">Title</th>
-                <th className="p-3 text-left whitespace-nowrap">Price</th>
-                <th className="p-3 text-left whitespace-nowrap">Category</th>
-                <th className="p-3 text-left whitespace-nowrap">Actions</th>
+                <th className="p-3 text-left">Title</th>
+                <th className="p-3 text-left">Price</th>
+                <th className="p-3 text-left">Category</th>
+                <th className="p-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>

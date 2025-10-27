@@ -34,7 +34,7 @@ export default function AdminCategoriesPage() {
   // Add or update category
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name.trim()) return setMessage(" Category name is required");
+    if (!form.name.trim()) return setMessage("Category name is required");
 
     setLoading(true);
     setMessage("");
@@ -137,7 +137,13 @@ export default function AdminCategoriesPage() {
               disabled={loading}
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-3 rounded-lg font-semibold hover:opacity-90 transition-all"
             >
-              {loading ? (editingId ? "Updating..." : "Adding...") : editingId ? "Update Category" : "Add Category"}
+              {loading
+                ? editingId
+                  ? "Updating..."
+                  : "Adding..."
+                : editingId
+                ? "Update Category"
+                : "Add Category"}
             </button>
             {message && (
               <p
@@ -152,46 +158,54 @@ export default function AdminCategoriesPage() {
         </div>
 
         {/* Existing Categories */}
-        <div className="w-full lg:w-2/3 bg-[#1a0b2a] p-6 rounded-2xl shadow-lg border border-[#2e1743] overflow-x-auto">
-          <h2 className="text-xl font-semibold mb-4 text-purple-400">📂 Existing Categories</h2>
-          <table className="w-full text-left table-auto">
-            <thead>
-              <tr className="border-b border-[#3d1c5e]">
-                <th className="py-2 px-3">Name</th>
-                <th className="py-2 px-3">Slug</th>
-                <th className="py-2 px-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categories.map((cat) => (
-                <tr key={cat._id} className="border-b border-[#3d1c5e] hover:bg-[#2e1743]/50">
-                  <td className="py-2 px-3">{cat.name}</td>
-                  <td className="py-2 px-3">{cat.slug || "—"}</td>
-                  <td className="py-2 px-3 flex gap-2">
-                    <button
-                      onClick={() => handleEdit(cat)}
-                      className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white text-sm"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(cat._id)}
-                      className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-sm"
-                    >
-                      Delete
-                    </button>
-                  </td>
+        <div className="w-full lg:w-2/3 bg-[#1a0b2a] p-6 rounded-2xl shadow-lg border border-[#2e1743] overflow-hidden">
+          <h2 className="text-xl font-semibold mb-4 text-purple-400">
+            📂 Existing Categories
+          </h2>
+          <div className="w-full overflow-x-hidden">
+            <table className="w-full table-auto text-left text-sm sm:text-base">
+              <thead>
+                <tr className="border-b border-[#3d1c5e]">
+                  <th className="py-2 px-3">Name</th>
+                  <th className="py-2 px-3">Slug</th>
+                  <th className="py-2 px-3">Actions</th>
                 </tr>
-              ))}
-              {categories.length === 0 && (
-                <tr>
-                  <td colSpan={3} className="py-4 text-center text-gray-400">
-                    No categories yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {categories.length > 0 ? (
+                  categories.map((cat) => (
+                    <tr
+                      key={cat._id}
+                      className="border-b border-[#3d1c5e] hover:bg-[#2e1743]/50"
+                    >
+                      <td className="py-2 px-3">{cat.name}</td>
+                      <td className="py-2 px-3">{cat.slug || "—"}</td>
+                      <td className="py-2 px-3 flex gap-2 flex-wrap">
+                        <button
+                          onClick={() => handleEdit(cat)}
+                          className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white text-sm"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(cat._id)}
+                          className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-sm"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="py-4 text-center text-gray-400">
+                      No categories yet.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

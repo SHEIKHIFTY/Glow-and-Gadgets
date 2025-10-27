@@ -103,20 +103,22 @@ export default function ProductDetails() {
 
           <p className="text-gray-300 leading-relaxed">{product.description}</p>
 
-          <div className="flex gap-4 mt-4">
-            <button
-              onClick={handleAddToCart}
-              className="flex-1 bg-[#1E90FF] hover:bg-[#FF00FF] text-white px-6 py-3 rounded-xl font-semibold transition-all"
-            >
-              ➕ Add to Cart {productQuantity > 0 && `(${productQuantity})`}
-            </button>
-            <button
-              onClick={handleOrderNow}
-              className="flex-1 bg-gradient-to-r from-[#FF00FF] to-[#1E90FF] px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-all"
-            >
-              🛒 Order Now
-            </button>
-          </div>
+         <div className="flex gap-2 mt-4 flex-wrap sm:flex-nowrap">
+  <button
+    onClick={handleAddToCart}
+    className="flex-1 bg-[#1E90FF] hover:bg-[#FF00FF] text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold transition-all whitespace-nowrap text-sm sm:text-base"
+  >
+    ➕ Add to Cart {productQuantity > 0 && `(${productQuantity})`}
+  </button>
+
+  <button
+    onClick={handleOrderNow}
+    className="flex-1 bg-gradient-to-r from-[#FF00FF] to-[#1E90FF] px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold hover:opacity-90 transition-all whitespace-nowrap text-sm sm:text-base"
+  >
+    🛒 Order Now
+  </button>
+</div>
+
         </div>
       </motion.div>
     </div>

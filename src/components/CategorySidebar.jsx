@@ -61,48 +61,49 @@ export default function CategorySidebar() {
         </button>
       )}
 
-      {/* Desktop Sidebar (unchanged) */}
-      <motion.aside
-        className="hidden sm:flex fixed top-[79px] left-0 h-[calc(100vh-79px)] w-[300px] bg-[#3B0966] text-white shadow-2xl flex-col overflow-hidden border-r-2 border-[#7B2FF7]"
-        initial={{ x: -60, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="sticky top-0 z-10 bg-[#3B0966] pt-6 px-4 pb-4 flex items-center gap-2 shadow-md">
-          <Sparkles className="text-[#00BFFF] w-5 h-5" />
-          <h2 className="font-bold text-xl text-[#FF00FF]">Categories</h2>
-        </div>
+      {/* Desktop Sidebar (unchanged except top/bottom adjustment) */}
+<motion.aside
+  className="hidden sm:flex fixed top-0 left-0 h-screen w-[300px] bg-[#3B0966] text-white shadow-2xl flex-col overflow-hidden border-r-2 border-[#7B2FF7]"
+  initial={{ x: -60, opacity: 0 }}
+  animate={{ x: 0, opacity: 1 }}
+  transition={{ duration: 0.6 }}
+>
+  <div className="sticky top-[82px] z-10 bg-[#3B0966] pt-2 px-4 pb-4 flex items-center gap-2 shadow-md">
+    <Sparkles className="text-[#00BFFF] w-5 h-5" />
+    <h2 className="font-bold text-xl text-[#FF00FF]">Categories</h2>
+  </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pt-4 pb-5">
-  <ul className="space-y-4 w-full">
-    {categories.map((cat) => (
-      <motion.li
-        key={cat._id}
-        whileHover={{ scale: 1.03, x: 4 }} // smooth subtle movement
-        transition={{ type: "spring", stiffness: 300, damping: 15 }} // snappy spring
-        className="relative cursor-pointer text-sm font-medium text-white
-                   bg-gradient-to-r from-[#1E1B4B]/60 to-[#2A156D]/60
-                   rounded-lg py-2 px-3 flex items-center gap-2
-                   shadow-[0_0_5px_rgba(0,191,255,0.3)]
-                   hover:shadow-[0_0_10px_#00BFFF,0_0_20px_#7B2FF7]
-                   transition-all duration-300 overflow-hidden"
-      >
-        {/* Glow effect on hover */}
-        <span className="absolute inset-0 bg-gradient-to-r from-[#00BFFF]/20 via-[#7B2FF7]/20 to-transparent
-                         opacity-0 hover:opacity-100 blur-xl transition-opacity duration-300"></span>
-
-        <Link
-          href={`/category/${encodeURIComponent(cat.slug)}`}
-          className="relative z-10 flex-1 hover:text-[#00BFFF] transition-colors duration-150"
+  {/* Scrollable list starts below the sticky header */}
+  <div className="flex-1 overflow-y-auto px-4 pb-5 mt-[66px]">
+    <ul className="space-y-4 w-full mt-4 pt-4">
+      {categories.map((cat) => (
+        <motion.li
+          key={cat._id}
+          whileHover={{ scale: 1.03, x: 4 }}
+          transition={{ type: "spring", stiffness: 300, damping: 15 }}
+          className="relative cursor-pointer text-sm font-medium text-white
+                     bg-gradient-to-r from-[#1E1B4B]/60 to-[#2A156D]/60
+                     rounded-lg py-2 px-3 flex items-center gap-2
+                     shadow-[0_0_5px_rgba(0,191,255,0.3)]
+                     hover:shadow-[0_0_10px_#00BFFF,0_0_20px_#7B2FF7]
+                     transition-all duration-300 overflow-hidden"
         >
-          {cat.name}
-        </Link>
-      </motion.li>
-    ))}
-  </ul>
-</div>
+          <span className="absolute inset-0 bg-gradient-to-r from-[#00BFFF]/20 via-[#7B2FF7]/20 to-transparent
+                           opacity-0 hover:opacity-100 blur-xl transition-opacity duration-300"></span>
 
-      </motion.aside>
+          <Link
+            href={`/category/${encodeURIComponent(cat.slug)}`}
+            className="relative z-10 flex-1 hover:text-[#00BFFF] transition-colors duration-150"
+          >
+            {cat.name}
+          </Link>
+        </motion.li>
+      ))}
+    </ul>
+  </div>
+</motion.aside>
+
+
 
       {/* Mobile Slide-in Sidebar + Overlay */}
       {open && (

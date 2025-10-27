@@ -10,6 +10,7 @@ export default function CheckoutPage() {
   const [showForm, setShowForm] = useState(false);
   const [customer, setCustomer] = useState({ name: "", phone: "", address: "" });
   const [orderSuccess, setOrderSuccess] = useState(false);
+  const [phoneError, setPhoneError] = useState(""); // Added for phone validation
 
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + (item.price || 0) * (item.quantity || 0),
@@ -22,41 +23,41 @@ export default function CheckoutPage() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!customer.name || !customer.phone || !customer.address) return;
+    e.preventDefault();
+    if (!customer.name || !customer.phone || !customer.address) return;
 
-  const orderData = {
-    customer,
-    products: cartItems.map((item) => ({
-      productId: item.id,
-      title: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      image: item.image || "/placeholder.png",
-    })),
-    total: totalPrice,
+    const orderData = {
+      customer,
+      products: cartItems.map((item) => ({
+        productId: item.id,
+        title: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image || "/placeholder.png",
+      })),
+      total: totalPrice,
+    };
+
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!res.ok) throw new Error("Failed to submit order");
+      setOrderSuccess(true);
+      setShowForm(false);
+      clearCart();
+      setCustomer({ name: "", phone: "", address: "" });
+      setPhoneError("");
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Try again.");
+    }
   };
 
-  try {
-    const res = await fetch("/api/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderData),
-    });
-
-    if (!res.ok) throw new Error("Failed to submit order");
-    setOrderSuccess(true);
-    setShowForm(false);
-    clearCart();
-    setCustomer({ name: "", phone: "", address: "" });
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong. Try again.");
-  }
-};
-
   const getImageSrc = (item) => {
-    // Use first image, fallback to placeholder
     return item.image || "/placeholder.png";
   };
 
@@ -84,7 +85,7 @@ export default function CheckoutPage() {
                   alt={item.name}
                   fill
                   className="object-cover"
-                  unoptimized // ✅ disable optimization for slow remote hosts
+                  unoptimized
                   onError={(e) => (e.currentTarget.src = "/placeholder.png")}
                 />
               </div>
@@ -176,14 +177,28 @@ export default function CheckoutPage() {
                 className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black"
                 required
               />
-              <input
-                type="tel"
-                placeholder="Phone Number"
-                value={customer.phone}
-                onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
-                className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black"
-                required
-              />
+
+              {/* Updated Phone Number Input */}
+              <div className="flex flex-col">
+                <input
+                  type="tel"
+                  placeholder="Phone Number"
+                  value={customer.phone}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      setCustomer({ ...customer, phone: value });
+                      setPhoneError("");
+                    } else {
+                      setPhoneError("Please enter numbers only");
+                    }
+                  }}
+                  className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black"
+                  required
+                />
+                {phoneError && <span className="text-red-500 text-sm mt-1">{phoneError}</span>}
+              </div>
+
               <textarea
                 placeholder="Address"
                 value={customer.address}

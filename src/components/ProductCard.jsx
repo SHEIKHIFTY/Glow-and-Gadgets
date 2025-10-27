@@ -25,7 +25,7 @@ export default function ProductCard({ product }) {
                  mb-3 sm:mb-6 cursor-pointer"
     >
       {/* Product Image */}
-      <div className="w-full h-36 sm:h-48 md:h-64 flex items-center justify-center bg-white p-2 sm:p-4">
+      <div className="w-full h-36 sm:h-48 md:h-64 flex items-center justify-center bg-white p-1 sm:py-1.5">
         {images[0] ? (
           <img
             src={images[0]}
