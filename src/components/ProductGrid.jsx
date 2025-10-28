@@ -38,8 +38,14 @@ export default function ProductGrid() {
     loadProducts();
   }, []);
 
-  if (loading) return <p className="text-center mt-16 ">Loading products...</p>;
-  if (products.length === 0) return <p className="text-center mt-10">No products found.</p>;
+  if (loading) {
+  return <p className="text-center mt-16">Loading products...</p>;
+}
+
+if (!loading && products.length === 0) {
+  return <p className="text-center mt-16">Refresh Once Again.</p>;
+}
+
 
   return (
     <div className="w-full">
