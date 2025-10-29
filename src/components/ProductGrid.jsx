@@ -42,9 +42,6 @@ export default function ProductGrid() {
   return <p className="text-center mt-16">Loading products...</p>;
 }
 
-if (!loading && products.length === 0) {
-  return <p className="text-center mt-16">Refresh Once Again.</p>;
-}
 
 
   return (

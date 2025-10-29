@@ -1,21 +1,34 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useCart } from "@/context/cartcontext";
 import Link from "next/link";
 import { Plus, Minus, X } from "lucide-react";
 import Image from "next/image";
+import { useSearchParams, useRouter } from "next/navigation";
 
-export default function CheckoutPage() {
+export default function CheckoutContent() {
   const { cartItems = [], incrementCart, decrementCart, removeFromCart, clearCart } = useCart();
   const [showForm, setShowForm] = useState(false);
   const [customer, setCustomer] = useState({ name: "", phone: "", address: "" });
   const [orderSuccess, setOrderSuccess] = useState(false);
-  const [phoneError, setPhoneError] = useState(""); // Added for phone validation
+  const [phoneError, setPhoneError] = useState("");
+  const router = useRouter();
+  const params = useSearchParams();
+  const success = params.get("success");
+  const canceled = params.get("canceled");
 
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + (item.price || 0) * (item.quantity || 0),
     0
   );
+
+  useEffect(() => {
+    if (success) {
+      setOrderSuccess(true);
+      clearCart();
+    }
+  }, [success]);
 
   const handleConfirmOrder = () => {
     if (cartItems.length === 0) return;
@@ -57,9 +70,29 @@ export default function CheckoutPage() {
     }
   };
 
-  const getImageSrc = (item) => {
-    return item.image || "/placeholder.png";
+  const handleStripePayment = async () => {
+    if (cartItems.length === 0) return alert("Your cart is empty!");
+
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cartItems }),
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Failed to create payment session");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Payment initialization failed");
+    }
   };
+
+  const getImageSrc = (item) => item.image || "/placeholder.png";
 
   return (
     <div className="min-h-screen mt-12 pt-8 pb-12 bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 p-6">
@@ -120,26 +153,33 @@ export default function CheckoutPage() {
           ))}
 
           <div className="mt-6 flex justify-between items-center">
-            <p className="text-2xl font-bold text-purple-900">Total: {totalPrice.toFixed(2)} ৳</p>
-            <button
-              onClick={handleConfirmOrder}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition-all"
-            >
-              Confirm Order
-            </button>
+            <p className="text-2xl font-bold text-purple-900">
+              Total: {totalPrice.toFixed(2)} ৳
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleConfirmOrder}
+                className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition-all"
+              >
+                Confirm Order
+              </button>
+              <button
+                onClick={() => router.push("/payment")}
+                className="bg-green-500 text-white py-2 px-4 rounded hover:bg-gray-800"
+              >
+                Pay Now
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Modal Form */}
+      {/* Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gradient-to-br from-purple-700 via-indigo-700 to-blue-700 rounded-2xl shadow-2xl p-6 w-11/12 sm:w-96 text-white">
-            <h2 className="text-2xl font-bold mb-4 text-center drop-shadow-lg">
-              Customer Details
-            </h2>
+            <h2 className="text-2xl font-bold mb-4 text-center drop-shadow-lg">Customer Details</h2>
 
-            {/* Cart Summary */}
             <div className="max-h-40 overflow-y-auto mb-4 p-2 bg-white/20 rounded-lg">
               <h3 className="font-semibold mb-2 text-yellow-300">Your Selected Products:</h3>
               {cartItems.map((item) => (
@@ -167,7 +207,6 @@ export default function CheckoutPage() {
               <p className="text-right font-bold mt-2">Total: {totalPrice.toFixed(2)}৳</p>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <input
                 type="text"
@@ -178,7 +217,6 @@ export default function CheckoutPage() {
                 required
               />
 
-              {/* Updated Phone Number Input */}
               <div className="flex flex-col">
                 <input
                   type="tel"
@@ -228,7 +266,6 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      {/* Success Message */}
       {orderSuccess && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gradient-to-r from-green-400 to-green-600 rounded-2xl shadow-2xl p-6 w-11/12 sm:w-96 text-center text-white">
