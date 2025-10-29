@@ -16,10 +16,11 @@ export default function PaymentPage() {
 
     try {
       const res = await fetch("/api/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: cartItems }),
-      });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ items: cartItems }),
+});
+
 
       const data = await res.json();
       if (data.url) {
