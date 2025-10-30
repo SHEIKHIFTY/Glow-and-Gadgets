@@ -19,14 +19,15 @@ export const metadata = {
     description:
       "Glow and Gadgets is your ultimate online destination for the latest in tech, lifestyle, and innovative gadgets. At Glow and Gadgets, quality meets affordability, ensuring you get cutting-edge technology without breaking the bank. Explore our curated collection, enjoy seamless shopping, and discover gadgets that add a touch of brilliance to your everyday life.",
     siteName: "Glow & Gadgets",
-    images: [
-      {
-        url: "/mylogo.jpeg", // ✅ Correct path (public folder)
-        width: 1200,
-        height: 630,
-        alt: "Glow & Gadgets",
-      },
-    ],
+   images: [
+  {
+    url: "https://glow-and-gadgets.vercel.app/mylogo.jpeg",
+    width: 1200,
+    height: 630,
+    alt: "Glow & Gadgets",
+  },
+],
+
     locale: "en_US",
     type: "website",
   },
