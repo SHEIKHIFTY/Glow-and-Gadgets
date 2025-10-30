@@ -180,10 +180,10 @@ export default function AdminCategoriesPage() {
                     >
                       <td className="py-2 px-3">{cat.name}</td>
                       <td className="py-2 px-3">{cat.slug || "—"}</td>
-                      <td className="py-2 px-3 flex gap-2 flex-wrap">
+                      <td className="py-3 px-3 flex gap-4 flex-wrap">
                         <button
                           onClick={() => handleEdit(cat)}
-                          className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white text-sm"
+                          className="bg-blue-600 hover:bg-blue-700 px-5 py-1 rounded text-white text-sm"
                         >
                           Edit
                         </button>

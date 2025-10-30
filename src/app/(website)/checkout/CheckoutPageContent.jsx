@@ -155,25 +155,36 @@ export default function CheckoutPageContent() {
             </div>
           ))}
 
-          <div className="mt-6 flex justify-between items-center">
-            <p className="text-2xl font-bold text-purple-900">
-              Total: {totalPrice.toFixed(2)} ৳
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={handleConfirmOrder}
-                className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition-all"
-              >
-                Confirm Order
-              </button>
-              <button
-                onClick={handleStripePayment}
-                className="bg-green-500 text-white py-2 px-4 rounded hover:bg-gray-800"
-              >
-                Pay Now
-              </button>
-            </div>
-          </div>
+        <div className="mt-6 flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-0">
+  {/* Left side: Total + Buttons */}
+<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
+  {/* Total amount */}
+  <p className="text-lg sm:text-2xl font-bold text-purple-900 whitespace-nowrap">
+    Total: {totalPrice.toFixed(2)} ৳
+  </p>
+
+  {/* Buttons */}
+  <div className="flex gap-2 flex-nowrap sm:ml-4">
+    <button
+      onClick={handleConfirmOrder}
+      className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-600 hover:to-pink-600 text-white px-4 py-2 rounded-xl font-semibold shadow-md transition-all text-sm sm:text-base whitespace-nowrap"
+    >
+      Confirm Order
+    </button>
+    <button
+      onClick={handleStripePayment}
+      className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition-all text-sm sm:text-base whitespace-nowrap"
+    >
+      Pay Now
+    </button>
+  </div>
+</div>
+
+
+
+  
+</div>
+
         </div>
       )}
 
