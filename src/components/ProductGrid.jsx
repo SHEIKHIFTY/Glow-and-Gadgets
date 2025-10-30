@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
 // Motion variants
 const containerVariants = {
@@ -19,34 +19,37 @@ const cardVariants = {
 export default function ProductGrid() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const isMountedRef = useRef(false);
 
-  useEffect(() => {
-    isMountedRef.current = true;
+ useEffect(() => {
+  let mounted = true; // track if component is mounted
 
-    async function loadProducts() {
-      try {
-        const res = await fetch("/api/products");
-        if (!res.ok) throw new Error("Failed to fetch products");
-        const data = await res.json();
-        if (!isMountedRef.current) return;
-        if (Array.isArray(data)) setProducts(data);
-        else if (data?.product) setProducts([data.product]);
-        else setProducts([]);
-      } catch (err) {
-        console.error("Failed to load products:", err);
-        if (isMountedRef.current) setProducts([]); // graceful fallback
-      } finally {
-        if (isMountedRef.current) setLoading(false);
-      }
+  const loadProducts = async (retries = 3) => {
+    try {
+      const res = await fetch("/api/products");
+      if (!res.ok) throw new Error("Network error");
+
+      const data = await res.json();
+      if (!mounted) return; // stop if unmounted
+
+      if (Array.isArray(data)) setProducts(data);
+      else if (data?.product) setProducts([data.product]);
+      else setProducts([]);
+
+    } catch (err) {
+      console.error(err);
+      if (retries > 0) setTimeout(() => loadProducts(retries - 1), 1000);
+    } finally {
+      if (mounted) setLoading(false);
     }
+  };
 
-    loadProducts();
+  loadProducts();
 
-    return () => {
-      isMountedRef.current = false; // cleanup
-    };
-  }, []);
+  return () => {
+    mounted = false; // cleanup on unmount
+  };
+}, []);
+
 
   // Loading state
   if (loading) {
@@ -66,8 +69,8 @@ export default function ProductGrid() {
       </motion.h2>
 
       {products.length === 0 ? (
-        <p className="text-center text-gray-400 mt-16">
-          No products available at the moment.
+        <p className="text-center text-red-600 mt-16">
+        Refresh the page to try again.
         </p>
       ) : (
         <motion.div
