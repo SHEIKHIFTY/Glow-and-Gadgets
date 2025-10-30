@@ -1,9 +1,11 @@
 "use client";
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
+// Motion variants
 const containerVariants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.2 } },
@@ -17,35 +19,39 @@ const cardVariants = {
 export default function ProductGrid() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const isMountedRef = useRef(false);
 
   useEffect(() => {
+    isMountedRef.current = true;
+
     async function loadProducts() {
       try {
         const res = await fetch("/api/products");
+        if (!res.ok) throw new Error("Failed to fetch products");
         const data = await res.json();
-        // Ensure data is array
+        if (!isMountedRef.current) return;
         if (Array.isArray(data)) setProducts(data);
         else if (data?.product) setProducts([data.product]);
         else setProducts([]);
       } catch (err) {
-        console.error("Failed to fetch products:", err);
-        setProducts([]);
+        console.error("Failed to load products:", err);
+        if (isMountedRef.current) setProducts([]); // graceful fallback
       } finally {
-        setLoading(false);
+        if (isMountedRef.current) setLoading(false);
       }
     }
 
     loadProducts();
+
+    return () => {
+      isMountedRef.current = false; // cleanup
+    };
   }, []);
 
+  // Loading state
   if (loading) {
-  return <p className="text-center mt-16">Loading products...</p>;
-}
-
-if (!loading && products.length === 0) {
-  return <p className="text-center text-red-600 mt-16 ">Reload the page again.</p>;
-}
-
+    return <p className="text-center mt-16">Loading products...</p>;
+  }
 
   return (
     <div className="w-full">
@@ -59,20 +65,26 @@ if (!loading && products.length === 0) {
         <span className="text-[#FF00FF] drop-shadow-[0_0_10px_#FF00FF]">Products</span>
       </motion.h2>
 
-      <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 justify-items-start px-2 sm:px-0 py-3"
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-      >
-        {products.map((p) => (
-          <motion.div key={p._id} variants={cardVariants} className="w-full">
-            <Link href={`/products/${p._id}`}>
-              <ProductCard product={p} />
-            </Link>
-          </motion.div>
-        ))}
-      </motion.div>
+      {products.length === 0 ? (
+        <p className="text-center text-gray-400 mt-16">
+          No products available at the moment.
+        </p>
+      ) : (
+        <motion.div
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 justify-items-start px-2 sm:px-0 py-3"
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+        >
+          {products.map((product) => (
+            <motion.div key={product._id} variants={cardVariants} className="w-full">
+              <Link href={`/products/${product._id}`}>
+                <ProductCard product={product} />
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
     </div>
   );
 }
