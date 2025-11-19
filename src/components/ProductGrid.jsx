@@ -69,8 +69,9 @@ export default function ProductGrid() {
       </motion.h2>
 
       {products.length === 0 ? (
-        <p className="text-center text-red-600 mt-16">
-        Refresh the page to try again.
+        <p className="text-center text-white-600 mt-16">
+        Please wait, your page is loading.
+
         </p>
       ) : (
         <motion.div
